@@ -119,29 +119,69 @@ class SparseMatrices{
         result->print();
 	}
 };
-
 int main(){
-	cout<<"Enter the matrices"<<endl;
-	cout<<"Enter the size"<<endl;
-	int size; cin>>size; 
-	cout<<"Enter the number of elements to be added"<<endl;
-	int z; cin>>z;
-	SparseMatrices<int> * mat1=new SparseMatrices<int>(size);
-	for(int i=0;i<z;i++){
-		int x,y,value; cin>>x>>y>>value;
-		mat1->addElement(x,y,value);
+	while(true){
+		cout<<"Enter your choice"<<endl;
+		cout<<"Enter 1 to find transpose of a matrix"<<endl;
+		cout<<"Enter 2 to add two matrices"<<endl;
+		cout<<"Enter 3 to multiply two matrices"<<endl;
+		cout<<"Enter 4 to exit"<<endl;
+		int choice; cin>>choice;
+		if(choice==4) return 0;
+		else if(choice==1){
+			cout<<"Enter the size"<<endl;
+			int size; cin>>size; 
+			cout<<"Enter the number of elements to be added"<<endl;
+			int z; cin>>z;
+			SparseMatrices<int> * mat1=new SparseMatrices<int>(size);
+			for(int i=0;i<z;i++){
+				int x,y,value;cin>>x>>y>>value;
+				mat1->addElement(x,y,value);
+			}
+			mat1->transpose();
+			mat1->print();
+		}
+		else if(choice==2){
+			cout<<"Enter the size"<<endl;
+			int size; cin>>size; 
+			cout<<"Enter the number of elements to be added"<<endl;
+			int z; cin>>z;
+			SparseMatrices<int> * mat1=new SparseMatrices<int>(size);
+			for(int i=0;i<z;i++){
+				int x,y,value;cin>>x>>y>>value;
+				mat1->addElement(x,y,value);
+			}
+			cout<<"Enter second matric of size "<<size<<endl;
+			cout<<"Enter number of elements to be added"<<endl;
+			int num; cin>>num;
+			SparseMatrices<int> * mat2=new SparseMatrices<int>(size);
+			for(int i=0;i<num;i++){
+				int x,y,value; cin>>x>>y>>value;
+				mat2->addElement(x,y,value);
+			}
+			mat1->Add(mat2);
+			mat1->print();
+		}
+		else if(choice==3){
+			cout<<"Enter the size"<<endl;
+			int size; cin>>size; 
+			cout<<"Enter the number of elements to be added"<<endl;
+			int z; cin>>z;
+			SparseMatrices<int> * mat1=new SparseMatrices<int>(size);
+			for(int i=0;i<z;i++){
+				int x,y,value;cin>>x>>y>>value;
+				mat1->addElement(x,y,value);
+			}
+			cout<<"Enter second matric of size "<<size<<endl;
+			cout<<"Enter number of elements to be added"<<endl;
+			int num; cin>>num;
+			SparseMatrices<int> * mat2=new SparseMatrices<int>(size);
+			for(int i=0;i<num;i++){
+				int x,y,value; cin>>x>>y>>value;
+				mat2->addElement(x,y,value);
+			}
+			mat1->Multiply(mat2);
+		}
 	}
-	cout<<"Enter second matric of size "<<size<<endl;
-	cout<<"Enter number of elements to be added"<<endl;
-	int num; cin>>num;
-	SparseMatrices<int> * mat2=new SparseMatrices<int>(size);
-	for(int i=0;i<num;i++){
-		int x,y,value; cin>>x>>y>>value;
-		mat2->addElement(x,y,value);
-	}
-	mat1->Multiply(mat2);
-	//mat1->Add(mat2);
-	//mat1->transpose();
-	//mat1->print();
 	return 0;
-}
+}	
