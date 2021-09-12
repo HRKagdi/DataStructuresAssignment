@@ -2,7 +2,62 @@
 #include<string>
 #include<stack>
 using namespace std;
+template <typename T>
+class Block{
+	public:
+	T data;
+	Block * next;
+	
+	Block(T data){
+		this->data=data;
+		this->next=NULL;
+	}
+};
+template <typename T>
+class Stack {
+    Block<T> * tp;
+    int size=0;
+   public:
+    Stack() {
+        tp=NULL;
+        size=0;
+    }
 
+
+    int getSize() {
+        return size;
+    }
+
+    bool isEmpty() {
+        return size==0;
+    }
+
+    void push(T element) {
+        Block<T> * temp=new Block<T>(element);
+        temp->next=tp;
+        tp=temp;
+        size++;
+    }
+
+    T pop() {
+        if(size==0){
+            return -1;
+        }
+        Block<T> * a=tp;
+        tp=tp->next;
+        int data=a->data;
+        delete a;
+        size--;
+        return data;
+    }
+
+    T top() {
+        if(size>0){
+            return tp->data;
+        }
+        return -1;
+    }
+};
 class Node{
 	public:
 	int data;
@@ -34,10 +89,6 @@ class BigInteger{
 		isNegative = false;
 	}
 	
-	/*BigInteger(const BigInteger * num){
-	    this->Integer=num->Integer;
-	    this->size=num->size;
-	}*/
 	
 	
 	//Addtion of two BigIntegers
@@ -238,10 +289,16 @@ class BigInteger{
 		while(!this->equals(num)){
 			if(this->isGreater(num)){
 				this->Subtraction(num);
+				if(this->equals(zero)){
+				num->print(); return;}
 			}
 			else {
 				num->Subtraction(this);
+				if(num->equals(zero)){
+				this->print(); return;}
 			}
+			
+			
 		}
 		this->print();
 	}
@@ -278,6 +335,126 @@ class BigInteger{
 	    }	
 	    this->print();	
 	}
+	
+	string convert(string tokens,int index){
+		string str=""; int i=index;
+		while(true){
+			if(i==tokens.size()) break;
+			int x=tokens[i]-'0';
+			if(0<=x && x<=9){
+				str+=tokens[i];
+			}
+			else break;
+			i++;
+		}
+		return str;
+	}
+	
+	int precedence(char op){
+	    if(op == '+'||op == '-')
+   		 return 1;
+   	    if(op == '*')
+    		return 2;
+            return 0;
+	}
+ 
+
+	BigInteger * applyOp(BigInteger * b,char op){
+		//this->print(); b->print(); 
+    		switch(op){
+        		case '+': this->Add(b); 
+        		case '-': this->Subtraction(b);
+        		case '*': this->Multiply(b);
+    		}
+    		return this;
+	}
+
+	void evaluate(string tokens){
+    		int i;
+     
+		stack <BigInteger*> values;
+     		stack <char> ops;
+     
+    		for(i = 0; i < tokens.size(); i++){
+         
+
+        	if(tokens[i] == ' ')
+           		 continue;
+         
+        	else if(tokens[i] == '('){
+            		ops.push(tokens[i]);
+        	}
+
+        	else if(0<=tokens[i]-'0' && 9>=tokens[i]-'0'){
+            		string str=convert(tokens,i);
+             		BigInteger* val=new BigInteger(str);
+        	    	values.push(val);
+			//cout<<str.size();
+        	       i+=str.size()-1;
+        	}
+
+        	else if(tokens[i] == ')')
+        	{
+            		while(!ops.empty() && ops.top() != '(')
+            		{
+                		BigInteger *val2 = values.top();
+                		values.pop();
+                 
+                		BigInteger* val1 = values.top();
+                		values.pop();
+                 
+                		char op = ops.top();
+                		ops.pop();
+                 
+                		values.push(val1->applyOp(val2, op));
+            		}
+             
+
+            	if(!ops.empty())
+               	ops.pop();
+        	}
+         
+
+        	else
+        	{
+
+            		while(!ops.empty() && precedence(ops.top())
+                                >= precedence(tokens[i])){
+                	BigInteger* val2 = values.top();
+                	values.pop();
+                 
+                	BigInteger *val1 = values.top();
+                	values.pop();
+                 
+                	char op = ops.top();
+               	ops.pop();
+                 
+                	values.push(val1->applyOp(val2, op));
+            	}
+             
+
+            	ops.push(tokens[i]);
+        	}
+    	}
+     
+
+    	while(!ops.empty()){
+        	BigInteger *val2 = values.top();
+        	values.pop();
+                 
+        	BigInteger *val1 = values.top();
+        	values.pop();
+                 
+        	char op = ops.top();
+        	ops.pop();
+                 
+        	values.push(val1->applyOp(val2, op));
+    	}
+     
+
+    		values.top()->print();
+    		return;
+	}
 
 
 };
@@ -290,11 +467,12 @@ int main(){
 		cout<<"1 for Exponentiation"<<endl;
 		cout<<"2 for GCD"<<endl;
 		cout<<"3 for factorial"<<endl;
-		cout<<"4 for Calculator"<<endl;
-		cout<<"5 if done"<<endl;
+		cout<<"4 for math operations"<<endl;
+		cout<<"5 for calculator"<<endl;
+		cout<<"6 if done"<<endl;
 		
 		int choice; cin>>choice;
-		if(choice==5) { break;}
+		if(choice==6) { break;}
 		else if(choice == 1){
 			cout<<"Enter a number and its exponent"<<endl;
 			string str1,str2; cin>>str1>>str2; cout<<endl;
@@ -333,6 +511,13 @@ int main(){
 			else{
 				n1->Multiply(n2); n1->print();
 			}
+		}
+		else if(choice==5){
+			cout<<"Enter expression string"<<endl;
+			string str; cin>>str;
+			BigInteger * num=new BigInteger("0");
+			num->evaluate(str);
+			
 		}
 	}
        return 0;
